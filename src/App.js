@@ -1,8 +1,11 @@
+import Main from "./components/Main";
+import Nav from "./components/Nav";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Hello world</h1>
+    <div className="app">
+      <Nav />
+      <Main />
     </div>
   );
 }
