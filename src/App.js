@@ -1,11 +1,18 @@
 import Main from "./components/Main";
 import Nav from "./components/Nav";
+import {useState} from 'react'
 
 function App() {
+
+  const [coinId, setCoinId] = useState("")
+  const getCoinId = (id) => {
+    setCoinId(id)
+  }
+  console.log(coinId);
   return (
     <div className="app">
-      <Nav />
-      <Main />
+      <Nav getCoinId={getCoinId}/>
+      <Main coinId={coinId}/>
     </div>
   );
 }

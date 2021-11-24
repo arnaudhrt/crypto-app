@@ -1,27 +1,50 @@
 import React from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
-export default function Heading() {
+export default function Heading(props) {
+   console.log("maj");
+   const options = {
+      method: 'GET',
+      url: `https://coinranking1.p.rapidapi.com/coin/${props.coinId === "" ? "1" : props.coinId}`,
+      headers: {
+         'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
+         'x-rapidapi-key': '85e41a5d31mshb460731cff03989p1f7e05jsn23d731d84e8a'
+      }
+   }
+   const [getCoin, setGetCoin] = useState([])
+   useEffect(() => {
+      axios
+         .request(options)
+         .then((res) => {
+            setGetCoin(res.data.data.coin)
+         })
+         .catch((err) => console.error(err))
+   }, [props])
+
    return (
       <header>
          <div className="title">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/BTC_Logo.svg" alt="Coin logo" />
-            <h1>Bitcoin - BTC</h1>
+            <img src={getCoin.iconUrl} alt="Coin logo" />
+            <h1>
+               {getCoin.name} - {getCoin.symbol}
+            </h1>
          </div>
          <div className="heading-col">
             <p>Rank</p>
-            <span>#1</span>
+            <span>#{getCoin.rank}</span>
          </div>
          <div className="heading-col">
             <p>Current price</p>
-            <span>$57,269.58</span>
+            <span>${getCoin.price ? Math.round(getCoin.price).toLocaleString() : ""}</span>
          </div>
          <div className="heading-col">
-            <p>All times hight</p>
-            <span>$68,789.63</span>
+            <p>Market Cap</p>
+            <span>${getCoin.marketCap ? getCoin.marketCap.toLocaleString() : ""}</span>
          </div>
          <div className="heading-col">
             <p>Total supply</p>
-            <span>18,881,362 BTC</span>
+            <span>{getCoin.totalSupply ? getCoin.totalSupply.toLocaleString() : ""} {getCoin.symbol}</span>
          </div>
       </header>
    )
