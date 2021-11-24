@@ -8,7 +8,6 @@ function App() {
   const getCoinId = (id) => {
     setCoinId(id)
   }
-  console.log(coinId);
   return (
     <div className="app">
       <Nav getCoinId={getCoinId}/>
