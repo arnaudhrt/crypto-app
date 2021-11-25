@@ -1,27 +1,122 @@
 import React from 'react'
+import { useState, useEffect, useRef } from 'react'
+import axios from 'axios'
 import Chart from 'chart.js/auto'
 import { Line } from 'react-chartjs-2'
 
-const data = {
-   labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-   datasets: [
-      {
-         label: '# of Votes',
-         data: [12, 19, 3, 5, 2, 3],
-         backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
-         borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
-         borderWidth: 1
+export default function ChartCrypto(props) {
+   // API CALL
+   const [getDataCoin, setGetDataCoin] = useState([])
+   const [getTime, setGetTime] = useState("5y")
+   const options = {
+      method: 'GET',
+      url: `https://coinranking1.p.rapidapi.com/coin/${props.coinId === '' ? '1' : props.coinId}/history/${getTime}`,
+      headers: {
+         'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
+         'x-rapidapi-key': '85e41a5d31mshb460731cff03989p1f7e05jsn23d731d84e8a'
       }
-   ]
-}
+   }
+   useEffect(() => {
+      axios
+         .request(options)
+         .then((res) => {
+            setGetDataCoin(res.data.data.history)
+         })
+         .catch((err) => console.error(err))
+   }, [props, getTime])
 
-// const options = {
-//     maintainAspectRatio: false,
-// }
-export default function ChartCrypto() {
+   // GET PRICE AND TIME FOR EACH COIN
+   const coinPrice = []
+   const coinTimestamp = []
+   function dateParser(date) {
+      let newDate = new Date(date).toLocaleDateString('en-EN', {
+         year: 'numeric',
+         month: 'short',
+         day: 'numeric'
+      })
+      return newDate
+   }
+
+   for (let i = 0; i < getDataCoin.length; i++) {
+      coinPrice.push(getDataCoin[i].price)
+   }
+
+   for (let i = 0; i < getDataCoin.length; i++) {
+      coinTimestamp.push(dateParser(getDataCoin[i].timestamp))
+   }
+
+   // DISPLAY CHART
+
+   const dataChart = {
+      labels: coinTimestamp,
+      datasets: [
+         {
+            data: coinPrice,
+            borderColor: '#42a5ff',
+            borderWidth: 2,
+            pointRadius: 0,
+            tension: 0.01,
+            spanGaps: true
+         }
+      ]
+   }
+
+   const optionsChart = {
+      responsive: true,
+      scales: {
+         y: {
+            position: 'right',
+            grid: {
+               boderWidth: 1,
+               color: '#333',
+               borderColor: '#333',
+               drawTicks: false
+            },
+            ticks: {
+               maxTicksLimit: 12,
+               padding: 14,
+               color: '#42a5ff',
+               callback: function (value, index, values) {
+                  return '$' + ' ' + value.toLocaleString()
+               }
+            }
+         },
+         x: {
+            grid: {
+               boderWidth: 1,
+               color: '#333',
+               drawTicks: false
+            },
+            ticks: {
+               maxTicksLimit: 20,
+               padding: 14,
+               color: 'rgb(186,186,186)'
+            }
+         }
+      },
+      plugins: {
+         legend: {
+            display: false
+         }
+      }
+   }
+
+   // CHANGE TIME RANGE
+
+   console.log(getTime);
    return (
       <div className="chart-wp">
-         <Line data={data} />
+         <div className="select-input">
+            <label for="rangeTime">In last :</label>
+            <select id="rangeTime" value={getTime} onChange={(e) => setGetTime(e.target.value)}>
+               <option value="24h">24 hours</option>
+               <option value="7d">7 days</option>
+               <option value="30d">30 days</option>
+               <option value="1y">1 years</option>
+               <option value="5y" selected>5 year</option>
+            </select>
+         </div>
+         <Line data={dataChart} options={optionsChart} />
       </div>
    )
 }

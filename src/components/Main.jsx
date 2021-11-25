@@ -7,7 +7,7 @@ export default function Main(props) {
   return (
     <main className="main">
       <Heading coinId={props.coinId}/>
-      <ChartCrypto />
+      <ChartCrypto coinId={props.coinId}/>
       <Footer />
     </main>
   )
