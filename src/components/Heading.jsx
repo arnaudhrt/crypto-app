@@ -4,19 +4,17 @@ import { key } from '../config'
 import axios from 'axios'
 
 export default function Heading(props) {
-   console.log("maj");
-   const options = {
-      method: 'GET',
-      url: `https://coinranking1.p.rapidapi.com/coin/${props.coinId === "" ? "1" : props.coinId}`,
-      headers: {
-         'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
-         'x-rapidapi-key': key.apiKey
-      }
-   }
    const [getCoin, setGetCoin] = useState([])
    useEffect(() => {
       axios
-         .request(options)
+         .request({
+            method: 'GET',
+            url: `https://coinranking1.p.rapidapi.com/coin/${props.coinId === "" ? "1" : props.coinId}`,
+            headers: {
+               'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
+               'x-rapidapi-key': key.apiKey
+            }
+         })
          .then((res) => {
             setGetCoin(res.data.data.coin)
          })

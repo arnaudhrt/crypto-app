@@ -5,20 +5,19 @@ import Logo from '../images/logo.svg'
 import axios from 'axios'
 
 export default function Nav(props) {
-   const options = {
-      method: 'GET',
-      url: 'https://coinranking1.p.rapidapi.com/coins?limit=100',
-      headers: {
-         'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
-         'x-rapidapi-key': key.apiKey
-      }
-   }
    const [allCoins, setAllCoins] = useState([])
-   const [searchCoin, setSearchCoin] = useState("")
+   const [searchCoin, setSearchCoin] = useState('')
 
    useEffect(() => {
       axios
-         .request(options)
+         .request({
+            method: 'GET',
+            url: 'https://coinranking1.p.rapidapi.com/coins?limit=100',
+            headers: {
+               'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
+               'x-rapidapi-key': key.apiKey
+            }
+         })
          .then((res) => setAllCoins(res.data.data.coins))
          .catch((err) => console.error(err))
    }, [])
@@ -32,28 +31,37 @@ export default function Nav(props) {
             </p>
          </div>
          <div className="search-bar">
-            <input value={searchCoin} placeholder={'Search Coin'} onChange={(e) => {setSearchCoin(e.target.value)}} />
+            <input
+               value={searchCoin}
+               placeholder={'Search Coin'}
+               onChange={(e) => {
+                  setSearchCoin(e.target.value)
+               }}
+            />
          </div>
          <div className="coins-list">
             <div className="coin-wp">
-               {allCoins.filter(el => {
-                  if(searchCoin === "") {
-                     return el 
-                  } else if (el.name.toLowerCase().includes(searchCoin.toLocaleLowerCase())){
-                     return el
-                  } else if (el.symbol.toLowerCase().includes(searchCoin.toLocaleLowerCase())){
-                     return el
-                  }
-               }).map((el) => (
-                  <div className="coin-row">
-                     <div className="divider"></div>
-                     <div className="coin-info" onClick={() => props.getCoinId(el.id) }>
-                        <img src={el.iconUrl} alt="" />
-                        <h2>{el.name}</h2>
-                        <span>{el.symbol}</span>
+               {allCoins
+                  .filter((el) => {
+                     if (searchCoin === '') {
+                        return el
+                     } else if (el.name.toLowerCase().includes(searchCoin.toLocaleLowerCase())) {
+                        return el
+                     } else if (el.symbol.toLowerCase().includes(searchCoin.toLocaleLowerCase())) {
+                        return el
+                     }
+                     
+                  })
+                  .map((el) => (
+                     <div className="coin-row">
+                        <div className="divider"></div>
+                        <div className="coin-info" onClick={() => props.getCoinId(el.id)}>
+                           <img src={el.iconUrl} alt="" />
+                           <h2>{el.name}</h2>
+                           <span>{el.symbol}</span>
+                        </div>
                      </div>
-                  </div>
-               ))}
+                  ))}
                <div className="divider"></div>
             </div>
          </div>
@@ -61,5 +69,4 @@ export default function Nav(props) {
    )
 }
 
-
-// 
+//

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Chart from 'chart.js/auto'
 import { Line } from 'react-chartjs-2'
@@ -8,18 +8,17 @@ import { key } from '../config'
 export default function ChartCrypto(props) {
    // API CALL
    const [getDataCoin, setGetDataCoin] = useState([])
-   const [getTime, setGetTime] = useState("5y")
-   const options = {
-      method: 'GET',
-      url: `https://coinranking1.p.rapidapi.com/coin/${props.coinId === '' ? '1' : props.coinId}/history/${getTime}`,
-      headers: {
-         'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
-         'x-rapidapi-key': key.apiKey
-      }
-   }
+   const [getTime, setGetTime] = useState('5y')
    useEffect(() => {
       axios
-         .request(options)
+         .request({
+            method: 'GET',
+            url: `https://coinranking1.p.rapidapi.com/coin/${props.coinId === '' ? '1' : props.coinId}/history/${getTime}`,
+            headers: {
+               'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
+               'x-rapidapi-key': key.apiKey
+            }
+         })
          .then((res) => {
             setGetDataCoin(res.data.data.history)
          })
@@ -47,7 +46,7 @@ export default function ChartCrypto(props) {
    }
 
    // DISPLAY CHART
-
+   console.log(Chart);
    const dataChart = {
       labels: coinTimestamp,
       datasets: [
@@ -78,7 +77,7 @@ export default function ChartCrypto(props) {
                padding: 14,
                color: '#42a5ff',
                callback: function (value, index, values) {
-                  return '$' + ' ' + value.toLocaleString()
+                  return `$ ${value.toLocaleString()}`
                }
             }
          },
@@ -104,7 +103,7 @@ export default function ChartCrypto(props) {
 
    // CHANGE TIME RANGE
 
-   console.log(getTime);
+   console.log(getTime)
    return (
       <div className="chart-wp">
          <div className="select-input">
@@ -114,7 +113,9 @@ export default function ChartCrypto(props) {
                <option value="7d">7 days</option>
                <option value="30d">30 days</option>
                <option value="1y">1 years</option>
-               <option value="5y" selected>5 year</option>
+               <option value="5y" selected>
+                  5 year
+               </option>
             </select>
          </div>
          <Line data={dataChart} options={optionsChart} />
