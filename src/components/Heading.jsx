@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
+import { key } from '../config'
 import axios from 'axios'
 
 export default function Heading(props) {
@@ -9,7 +10,7 @@ export default function Heading(props) {
       url: `https://coinranking1.p.rapidapi.com/coin/${props.coinId === "" ? "1" : props.coinId}`,
       headers: {
          'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
-         'x-rapidapi-key': '85e41a5d31mshb460731cff03989p1f7e05jsn23d731d84e8a'
+         'x-rapidapi-key': key.apiKey
       }
    }
    const [getCoin, setGetCoin] = useState([])

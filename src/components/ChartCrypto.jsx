@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import Chart from 'chart.js/auto'
 import { Line } from 'react-chartjs-2'
+import { key } from '../config'
 
 export default function ChartCrypto(props) {
    // API CALL
@@ -13,7 +14,7 @@ export default function ChartCrypto(props) {
       url: `https://coinranking1.p.rapidapi.com/coin/${props.coinId === '' ? '1' : props.coinId}/history/${getTime}`,
       headers: {
          'x-rapidapi-host': 'coinranking1.p.rapidapi.com',
-         'x-rapidapi-key': '85e41a5d31mshb460731cff03989p1f7e05jsn23d731d84e8a'
+         'x-rapidapi-key': key.apiKey
       }
    }
    useEffect(() => {
