@@ -42,6 +42,7 @@ export default function Nav(props) {
          <div className="coins-list">
             <div className="coin-wp">
                {allCoins
+                  // eslint-disable-next-line
                   .filter((el) => {
                      if (searchCoin === '') {
                         return el
@@ -50,7 +51,6 @@ export default function Nav(props) {
                      } else if (el.symbol.toLowerCase().includes(searchCoin.toLocaleLowerCase())) {
                         return el
                      }
-                     
                   })
                   .map((el) => (
                      <div className="coin-row">
